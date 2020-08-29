@@ -1,23 +1,18 @@
 from containers import  Configs, Agents
+from environments.environment import Environment
+from environments.task_queue  import TaskQueue, Task
+from environments.worker_pool import WorkerPool, Worker
 
-import threading
 import time
 import random
-import collections
-import logging
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='(%(threadName)-10s) %(message)s',
-)
 
 if __name__ == "__main__":
 
-    Configs.config.override({
-        # TODO
-    })
+    # Configs.config.override({
+    #     # TODO
+    # })
 
-    agent = Agents.random_agent
+    agent = Agents.agent
 
     # Creamos una cola donde ir encolando las tareas
     myTaskQueue = TaskQueue()
@@ -30,6 +25,11 @@ if __name__ == "__main__":
         myWorkerPool.add_worker(wrk)
         
     myEnvironment = Environment(myWorkerPool, myTaskQueue)
+
+    # Inicializamos state, reward y done
+    state   = [myWorkerPool.get_num_workers(), 0, 0]
+    reward  = 0
+    done    = False
 
     try:
         past_num_tasks = 0
