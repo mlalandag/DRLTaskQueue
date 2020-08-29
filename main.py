@@ -1,7 +1,9 @@
-from containers import  Configs, Agents
+# from containers import  Configs, Agents, Environments
 from environments.environment import Environment
 from environments.task_queue  import TaskQueue, Task
 from environments.worker_pool import WorkerPool, Worker
+from agents.random_agents     import RandomAgent
+from agents.td_agents         import *
 
 import time
 import random
@@ -11,8 +13,6 @@ if __name__ == "__main__":
     # Configs.config.override({
     #     # TODO
     # })
-
-    agent = Agents.agent
 
     # Creamos una cola donde ir encolando las tareas
     myTaskQueue = TaskQueue()
@@ -26,6 +26,8 @@ if __name__ == "__main__":
         
     myEnvironment = Environment(myWorkerPool, myTaskQueue)
 
+    agent = RandomAgent()
+
     # Inicializamos state, reward y done
     state   = [myWorkerPool.get_num_workers(), 0, 0]
     reward  = 0
@@ -34,26 +36,25 @@ if __name__ == "__main__":
     try:
         past_num_tasks = 0
         while True:
+
             # Creamos una tarea cada cierto tiempo
-            num = random.randint(1, 10000)
-            if num % 1000 == 0:
+            num = random.randint(1, 100)
+            if num % 10 == 0:
                 task = Task("Fichero")
                 myEnvironment.task_queue.add_task(task)
-                
+
+            # Si tareas en la cola hay algun worker libre 
+            # le asignamos la primera tarea pendiente 
             for wrk in myEnvironment.worker_pool.pool:
                 if not wrk.is_running():
                     if myEnvironment.task_queue.get_num_tasks() > 0:
                         wrk.run_task(myEnvironment.task_queue.take_task())
 
-            #print("Number of Tasks   = {}".format(myEnvironment.task_queue.get_num_tasks()))
-            #print("Number of Workers = {}".format(myEnvironment.worker_pool.get_num_workers()))
-            
-            # Comenzamos con un agente que seleccione las acciones al azar
+            # El agente decide la siguiente accion y recoge 
+            # el nuevo estado y la recompensa
             action = agent.act(state, reward, done)
             reward, state, done = myEnvironment.step(action, past_num_tasks)
-            print("reward, state, done = {}, {}, {}".format(reward, state, done))        
-
-
+            print("reward = {}, state= {}, done = {}".format(reward, state, done))        
 
     except KeyboardInterrupt:
         print("Press Ctrl-C to terminate while statement")

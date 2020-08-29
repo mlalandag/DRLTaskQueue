@@ -57,8 +57,16 @@ class WorkerPool():
                     self.pool.remove(wrk)
                     self.number_of_workers -= 1
                     deleted = True
-            if deleted:
+                    break
+            if (deleted or self.number_of_workers == 0):
                 break
         
     def get_num_workers(self):
         return self.number_of_workers
+
+    def get_num_workers_running(self):
+        count = 0
+        for wrk in self.pool:
+            if wrk.is_running():
+                count += 1
+        return count
