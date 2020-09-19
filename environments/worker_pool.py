@@ -39,11 +39,14 @@ class Worker():
 
 class WorkerPool():
     
-    def __init__(self, max_workers):
+    def __init__(self, max_workers, initial_workers):
         self.pool = []
         self.number_of_workers = 0
         self.max_workers = max_workers
         self.avg_time = 0
+        for i in range(0,initial_workers):
+            wrk = Worker()
+            self.add_worker(wrk)
         
     def add_worker(self, worker):
         if self.number_of_workers < self.max_workers:

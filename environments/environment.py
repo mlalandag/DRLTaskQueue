@@ -1,17 +1,27 @@
-from environments.worker_pool import Worker
+from environments.task_queue  import TaskQueue, Task
+from environments.worker_pool import WorkerPool, Worker
 from config import *
 import numpy as np
 
 class Environment():
     
-    def __init__(self, worker_pool, task_queue):
-        self.worker_pool     = worker_pool
-        self.task_queue      = task_queue
+    # def __init__(self):
+    #     # Creamos el Pool con un tope de 10 workers
+    #     self.worker_pool = WorkerPool(MAX_NUM_WORKERS)
+    #     # Cola donde ir encolando las tareas        
+    #     self.task_queue  = TaskQueue()
     
+    def reset(self):
+        # Creamos el Pool con un tope de 10 workers
+        self.worker_pool = WorkerPool(MAX_NUM_WORKERS, INITIAL_WORKERS)
+        # Cola donde ir encolando las tareas        
+        self.task_queue  = TaskQueue() 
+        return [self.worker_pool.get_num_workers(), 0, 0, 0] 
+        
     
     def step(self, action, past_num_tasks):
 
-        reward, done = 0, 0
+        reward, done = 0, False
 
         if action == 0:         # if action is 0, do nothing, check status and give reward
             if self.task_queue.get_num_tasks() > past_num_tasks:
@@ -32,7 +42,7 @@ class Environment():
         # Discretizamos el tiempo medio de estancia en la cola en varios niveles
         time_in_queue_category = np.digitize(self.task_queue.avg_time_in_queue, BINS, right=False)
         if time_in_queue_category == len(BINS):
-            time_in_queue_category - 1
+            done = True
 
         # creating the state vector
         state = [self.worker_pool.get_num_workers(),
@@ -40,4 +50,4 @@ class Environment():
                  self.task_queue.get_num_tasks(), 
                  time_in_queue_category]
 
-        return reward, state, done
+        return state, reward, done
