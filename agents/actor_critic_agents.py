@@ -1,40 +1,28 @@
+import random
 
-
-class TdAgent():
+class DDPGAgent():
     
     def __init__(self):
         pass
         
     def act(self, observation, reward, done):
 
-        pass
+        return random.choice([0,1,2])
 
-
-class SarsaAgent():
+class A2CAgent():
     
     def __init__(self):
         pass
         
     def act(self, observation, reward, done):
 
-        pass       
+        return random.choice([0,1,2])        
 
-
-class QLearningAgent():
+class A3CAgent():
     
     def __init__(self):
         pass
         
     def act(self, observation, reward, done):
 
-        pass                
-
-
-class DeepQLearningAgent():
-    
-    def __init__(self):
-        pass
-        
-    def act(self, observation, reward, done):
-
-        pass                
+        return random.choice([0,1,2])                

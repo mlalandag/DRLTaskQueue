@@ -1,13 +1,13 @@
 from environments.worker_pool import Worker
 from config import *
+import numpy as np
 
 class Environment():
     
     def __init__(self, worker_pool, task_queue):
         self.worker_pool     = worker_pool
         self.task_queue      = task_queue
-        self.avg_time        = 0
-      
+    
     
     def step(self, action, past_num_tasks):
 
@@ -29,10 +29,15 @@ class Environment():
             reward += ACTION_2_REWARD      
 
 
+        # Discretizamos el tiempo medio de estancia en la cola en varios niveles
+        time_in_queue_category = np.digitize(self.task_queue.avg_time_in_queue, BINS, right=False)
+        if time_in_queue_category == len(BINS):
+            time_in_queue_category - 1
+
         # creating the state vector
         state = [self.worker_pool.get_num_workers(),
                  self.worker_pool.get_num_workers_running(),        
                  self.task_queue.get_num_tasks(), 
-                 self.avg_time]
+                 time_in_queue_category]
 
         return reward, state, done

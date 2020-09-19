@@ -1,6 +1,5 @@
 
-
-class TdAgent():
+class PPOAgent():
     
     def __init__(self):
         pass
@@ -9,28 +8,25 @@ class TdAgent():
 
         pass
 
-
-class SarsaAgent():
+class PPO2Agent():
     
     def __init__(self):
         pass
         
     def act(self, observation, reward, done):
 
-        pass       
+        pass   
 
-
-class QLearningAgent():
+class ACERAgent():
     
     def __init__(self):
         pass
         
     def act(self, observation, reward, done):
 
-        pass                
+        pass   
 
-
-class DeepQLearningAgent():
+class TRPOAgent():
     
     def __init__(self):
         pass
